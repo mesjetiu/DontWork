@@ -15,8 +15,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="info.pauek.dontwork.DontWorkService">
+
+        <service android:name=".DontWorkService" >
         </service>
+
+        <activity android:name=".AlertActivity" >
+        </activity>
     </application>
 
 </manifest>

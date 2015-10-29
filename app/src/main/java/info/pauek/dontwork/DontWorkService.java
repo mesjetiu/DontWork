@@ -65,8 +65,9 @@ public class DontWorkService extends Service {
                     lastOn = System.currentTimeMillis();
                     timesOn++;
                     if (timesOn % 5 == 0) {
-                        Log.i("DontWork", "Time to stop!");
-                        Toast.makeText(DontWorkService.this, "Time to stop!", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(DontWorkService.this, AlertActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
                     }
                 }
             }

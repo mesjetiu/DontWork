@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DontWork</string>
+    <string name="warning">You should stop working!</string>
 </resources>
