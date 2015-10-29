@@ -11,11 +11,11 @@ import android.view.ViewGroup;
 /**
  * Created by pauek on 29/10/15.
  */
-public class AlertView extends ViewGroup {
+public class BlockScreenView extends ViewGroup {
 
     private Paint redPaint;
 
-    public AlertView(Context context) {
+    public BlockScreenView(Context context) {
         super(context);
         redPaint = new Paint();
         redPaint.setAntiAlias(true);
