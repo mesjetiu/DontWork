@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by pauek on 29/10/15.
@@ -25,6 +26,7 @@ public class DontWorkService extends Service {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
         registerReceiver(receiver, filter);
     }
 
@@ -42,15 +44,31 @@ public class DontWorkService extends Service {
 
     public class ScreenOnOffReceiver extends BroadcastReceiver {
 
-        private long lastOn;
+        private boolean screenOn = false;
+        private long lastOn = -1;
+        private int timesOn = 0;
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                long diff = System.currentTimeMillis() - lastOn;
-                Log.i("DontWork", String.format("Screen on: %.3f seconds", (float)diff / 1000.0f));
-            } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                lastOn = System.currentTimeMillis();
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_SCREEN_OFF)) {
+                screenOn = false;
+                if (lastOn != -1) {
+                    long diff = System.currentTimeMillis() - lastOn;
+                    Log.i("DontWork", String.format("Screen on: %.3f seconds", (float) diff / 1000.0f));
+                    lastOn = -1;
+                }
+            } else if (action.equals(Intent.ACTION_SCREEN_ON)) {
+                screenOn = true;
+            } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
+                if (screenOn) {
+                    lastOn = System.currentTimeMillis();
+                    timesOn++;
+                    if (timesOn % 5 == 0) {
+                        Log.i("DontWork", "Time to stop!");
+                        Toast.makeText(DontWorkService.this, "Time to stop!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }
     }
