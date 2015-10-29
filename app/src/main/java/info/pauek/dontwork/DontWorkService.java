@@ -1,22 +1,39 @@
 package info.pauek.dontwork;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * Created by pauek on 29/10/15.
+ *
+ * Documentación interesante sobre permisos y SYSTEM_ALERT_WINDOW
+ *
+ * http://www.androidpolice.com/2015/09/07/android-m-begins-locking-down-floating-apps-requires-users-to-grant-special-permission-to-draw-on-other-apps/
+ *
+ *
+ *
  */
 public class DontWorkService extends Service {
 
+
     ScreenOnOffReceiver receiver;
+
 
 
 
@@ -28,6 +45,8 @@ public class DontWorkService extends Service {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
         registerReceiver(receiver, filter);
+
+
     }
 
     @Override
@@ -65,12 +84,30 @@ public class DontWorkService extends Service {
                     lastOn = System.currentTimeMillis();
                     timesOn++;
                     if (timesOn % 5 == 0) {
-                        Intent i = new Intent(DontWorkService.this, AlertActivity.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
+                        displayAlert();
                     }
                 }
             }
+        }
+
+        private void startAlertActivity() {
+            Intent i = new Intent(DontWorkService.this, AlertActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        }
+
+        private void displayAlert() {
+            AlertView alert = new AlertView(DontWorkService.this);
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                    0,
+                    PixelFormat.TRANSLUCENT);
+            params.gravity = Gravity.CENTER;
+            params.setTitle("Load Average");
+            WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+            wm.addView(alert, params);
         }
     }
 }
