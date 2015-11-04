@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,11 +31,35 @@ import android.view.WindowManager;
  */
 public class DontWorkService extends Service {
 
-    ScreenOnOffReceiver receiver;
-    private View blockScreenView;
-
     @Override
     public void onCreate() {
+        Log.i("DontWork", "DontWorkService.onCreate");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("DontWork", "DontWorkService.onStartCommand: start id " + startId + ": " + intent);
+        return START_STICKY;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    private final IBinder mBinder = new LocalBinder();
+
+    public class LocalBinder extends Binder {
+        DontWorkService getService() {
+            return DontWorkService.this;
+        }
+    }
+
+    ScreenOnOffReceiver receiver = null;
+
+    public void startBlocking() {
+        Log.i("DontWork", "DontWorkService.startBlocking");
         receiver = new ScreenOnOffReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
@@ -42,17 +68,17 @@ public class DontWorkService extends Service {
         registerReceiver(receiver, filter);
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("DontWork", "Received start id " + startId + ": " + intent);
-        return START_STICKY;
+    public void stopBlocking() {
+        Log.i("DontWork", "DontWorkService.stopBlocking");
+        unregisterReceiver(receiver);
+        receiver = null;
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public boolean isBlocking() {
+        return receiver != null;
     }
+
+    private View blockScreenView;
 
     public class ScreenOnOffReceiver extends BroadcastReceiver {
 

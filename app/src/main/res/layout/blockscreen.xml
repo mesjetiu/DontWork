@@ -3,12 +3,12 @@
     android:layout_width="fill_parent" android:layout_height="fill_parent"
     android:background="#b90000">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/stop_working_message"
-        android:id="@+id/text"
+        android:id="@+id/imageView"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/stop"
+        android:layout_margin="30dp" />
 </RelativeLayout>

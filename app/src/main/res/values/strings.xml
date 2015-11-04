@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">DontWork</string>
-    <string name="warning">You should stop working!</string>
-    <string name="stop_working_message">Stop Working!</string>
+
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+
+    <string name="permission_not_granted">Permission to block screen not granted. Exiting.</string>
+
+    <string name="text_title">Don\'t work, ever</string>
+    <string name="text_explanation">This app let\'s you guard against too much work. It will block your phone whenever you have already used it too much!!</string>
 </resources>

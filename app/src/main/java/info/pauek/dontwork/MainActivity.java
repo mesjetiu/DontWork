@@ -1,38 +1,48 @@
 package info.pauek.dontwork;
 
-import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.ServiceConnection;
 import android.net.Uri;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
-//      private static final int MY_PERMISSIONS_REQUEST_SYSTEM_ALERT_WINDOW = 0;
-
-
     public static int OVERLAY_PERMISSION_REQ_CODE = 1;
+    private DontWorkService service;
+    private Button startButton;
 
     public void requestOverlayPermission() {
-        if (!Settings.canDrawOverlays(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+            }
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
-            if (!Settings.canDrawOverlays(this)) {
-                Log.e("DontWork", "Permission not granted!");
-                finish();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.canDrawOverlays(this)) {
+                    Log.e("DontWork", "Permission not granted!");
+                    Toast.makeText(
+                        this,
+                        R.string.permission_not_granted,
+                        Toast.LENGTH_SHORT
+                    ).show();
+                    finish();
+                }
             }
         }
     }
@@ -41,32 +51,63 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         requestOverlayPermission();
 
-        /*
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.SYSTEM_ALERT_WINDOW);
-        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.SYSTEM_ALERT_WINDOW)) {
+        // Start service
+        Intent intent = new Intent(this, DontWorkService.class);
+        startService(intent);
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
+        startButton = (Button)findViewById(R.id.button);
+    }
 
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW},
-                        MY_PERMISSIONS_REQUEST_SYSTEM_ALERT_WINDOW);
+    private ServiceConnection connection;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Bind to service
+        connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                DontWorkService.LocalBinder binder = (DontWorkService.LocalBinder)service;
+                MainActivity.this.service = binder.getService();
+
+                if (MainActivity.this.service.isBlocking()) {
+                    startButton.setText(R.string.stop);
+                }
             }
-        } else {
-            Toast.makeText(this, "Permission GRANTED!", Toast.LENGTH_LONG).show();
-        }
-        */
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                MainActivity.this.service = null;
+            }
+        };
 
         Intent intent = new Intent(this, DontWorkService.class);
-        Log.i("DontWork", "Trying to start service...");
-        startService(intent);
+        boolean boundService = bindService(intent, connection, 0);
+        if (!boundService) {
+            Log.e("DontWork", "Cannot bind to service!");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the service
+        if (service != null) {
+            unbindService(connection);
+            service = null;
+        }
+    }
+
+    public void onStartOrStop(View view) {
+        if (!service.isBlocking()) {
+            service.startBlocking();
+            startButton.setText(R.string.stop);
+        } else {
+            service.stopBlocking();
+            startButton.setText(R.string.start);
+        }
     }
 }
