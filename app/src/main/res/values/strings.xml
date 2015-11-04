@@ -7,5 +7,5 @@
     <string name="permission_not_granted">Permission to block screen not granted. Exiting.</string>
 
     <string name="text_title">Don\'t work, ever</string>
-    <string name="text_explanation">This app let\'s you guard against too much work. It will block your phone whenever you have already used it too much!!</string>
+    <string name="text_explanation">This app let\'s you guard against too much work. It will block your phone whenever you have already used it too much.</string>
 </resources>

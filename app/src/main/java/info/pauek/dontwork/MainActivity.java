@@ -105,9 +105,11 @@ public class MainActivity extends AppCompatActivity
         if (!service.isBlocking()) {
             service.startBlocking();
             startButton.setText(R.string.stop);
+            startButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
         } else {
             service.stopBlocking();
             startButton.setText(R.string.start);
+            startButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play, 0, 0, 0);
         }
     }
 }

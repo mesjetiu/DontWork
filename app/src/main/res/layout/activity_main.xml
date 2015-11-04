@@ -37,5 +37,8 @@
         android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:onClick="onStartOrStop" />
+        android:onClick="onStartOrStop"
+        android:drawableLeft="@android:drawable/ic_media_play"
+        android:drawablePadding="10dp"
+        android:paddingEnd="20dp" />
 </RelativeLayout>
