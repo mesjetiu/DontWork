@@ -34,11 +34,46 @@ public class DontWorkService extends Service {
     private static final float minutesPerDay = 16.0f * 60.0f;
 
     // Parameters
+    private int param1 = 1; // 1h
+    private int param2 = 5; // 10 minutes
     private float paramScreenOnMinutesPerDay = 60.0f; // 1 hour screen on time every day (16 hours of wake time)
     private float paramMaxConsecutiveMinutes = 10.0f;
 
-    void setParam1(float x) { paramScreenOnMinutesPerDay = x; }
-    void setParam2(float x) { paramMaxConsecutiveMinutes = x; }
+    public void setParam1(int x) {
+        param1 = x;
+        paramScreenOnMinutesPerDay = (param1 + 1) * 30.0f;
+    }
+
+    public String getTextParam1() {
+        String s;
+        int min = (int)paramScreenOnMinutesPerDay;
+        int H = min / 60;
+        int M = min % 60;
+        String sh = "", sm = "";
+        if (H > 1) {
+            String shours = getResources().getString(R.string.hours);
+            sh = String.format("%d %s", H, shours);
+        } else if (H == 1) {
+            String shour = getResources().getString(R.string.hour);
+            sh = String.format("1 %s", shour);
+        }
+        if (M != 0) {
+            String sminutes = getResources().getString(R.string.minutes);
+            sm = String.format("%d %s", M, sminutes);
+        }
+        return sh + " " + sm;
+    }
+
+    public void setParam2(int x) {
+        param2 = x;
+        int minutes = param2 + 5;
+        paramMaxConsecutiveMinutes = (float)minutes;
+    }
+
+    public String getTextParam2() {
+        int minutes = param2 + 5;
+        return String.format("%d minutes", minutes);
+    }
 
     private float ratio; // the relative weight of screenOffTime with respect to screenOnTime
 
@@ -71,6 +106,9 @@ public class DontWorkService extends Service {
     }
 
     private final IBinder mBinder = new LocalBinder();
+
+    public int getParam1() { return param1; }
+    public int getParam2() { return param2; }
 
     public class LocalBinder extends Binder {
         DontWorkService getService() {

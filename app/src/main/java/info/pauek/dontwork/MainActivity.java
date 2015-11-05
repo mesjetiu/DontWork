@@ -65,13 +65,14 @@ public class MainActivity extends AppCompatActivity
         textParam1 = (TextView)findViewById(R.id.param_text_1);
         textParam2 = (TextView)findViewById(R.id.param_text_2);
         barParam1 = (SeekBar)findViewById(R.id.bar_param_1);
-        setParam1(barParam1.getProgress());
         barParam2 = (SeekBar)findViewById(R.id.bar_param_2);
-        setParam2(barParam2.getProgress());
         barParam1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                setParam1(progress);
+                if (service != null) {
+                    service.setParam1(progress);
+                    textParam1.setText(service.getTextParam1());
+                }
             }
 
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -81,6 +82,10 @@ public class MainActivity extends AppCompatActivity
         barParam2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (service != null) {
+                    service.setParam2(progress);
+                    textParam2.setText(service.getTextParam2());
+                }
             }
 
             @Override
@@ -89,24 +94,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-    }
-
-    private void setParam1(int x) {
-        switch (x) {
-            case 0: service.setParam1(30); textParam1.setText("30m"); break;
-            case 1: service.setParam1(60); textParam1.setText("1h"); break;
-            case 2: service.setParam1(90); textParam1.setText("1h 30m"); break;
-            case 3: service.setParam1(120); textParam1.setText("2h"); break;
-            case 4: service.setParam1(150); textParam1.setText("2h 30m"); break;
-            case 5: service.setParam1(180); textParam1.setText("3h"); break;
-        }
-
-    }
-
-    private void setParam2(int x) {
-        int minutes = x + 5;
-        service.setParam2((float)minutes);
-        textParam2.setText(String.format("%d minutes", minutes));
     }
 
     private ServiceConnection connection;
@@ -125,8 +112,17 @@ public class MainActivity extends AppCompatActivity
                 boolean isWatching = MainActivity.this.service.isWatching();
                 if (isWatching) {
                     startButton.setText(R.string.stop);
+
                 }
+
+                DontWorkService srv = MainActivity.this.service;
+
+                textParam1.setText(srv.getTextParam1());
+                barParam1.setProgress(srv.getParam1());
                 barParam1.setEnabled(!isWatching);
+
+                textParam2.setText(srv.getTextParam2());
+                barParam2.setProgress(srv.getParam2());
                 barParam2.setEnabled(!isWatching);
             }
 
