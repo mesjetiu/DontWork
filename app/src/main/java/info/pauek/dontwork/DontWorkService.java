@@ -173,16 +173,16 @@ public class DontWorkService extends Service {
         if (screenUnlocked && !blocking) {
             addOnTime();
         }
-        last = System.currentTimeMillis();
     }
 
     private void onScreenUnlocked() {
         if (!screenOn) {
             Log.e("DontWork", "onScreenUnlocked and screenOn == false????");
         }
-        addOffTime();
-        timesOn++;
         if (!blocking) {
+            addOffTime();
+            timesOn++;
+            bucket += 1.0; // penalty for every screenOn (except if already blocking)
             considerBlockingScreen();
             if (!blocking) {
                 postTick(5000);

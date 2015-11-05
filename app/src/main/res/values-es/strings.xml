@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">No trabajes</string>
+    <string name="hour">hora</string>
+    <string name="hours">horas</string>
+    <string name="max_screen_on_time">Tiempo máximo contínuo</string>
+    <string name="minutes">minutos</string>
+    <string name="param_total_screen_on">Objetivo de uso diario</string>
+    <string name="permission_not_granted">Permiso para bloquear la pantalla denegado. Saliendo.</string>
+    <string name="start">Empezar</string>
+    <string name="stop">Parar</string>
+    <string name="text_explanation">Esta aplicación te protege contra el exceso de trabajo. Te bloqueará la pantalla del teléfono cuando lo hayas usado demasiado ya.</string>
+    <string name="text_title">No trabajes, jamás</string>
+</resources>
