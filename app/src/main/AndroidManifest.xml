@@ -3,7 +3,6 @@
     package="info.pauek.dontwork" >
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -23,8 +22,6 @@
         <service android:name=".DontWorkService" >
         </service>
 
-        <activity android:name=".AlertActivity" >
-        </activity>
     </application>
 
 </manifest>

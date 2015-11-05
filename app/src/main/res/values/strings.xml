@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Don't Work</string>
+    <string name="app_name">Don\'t Work</string>
 
     <string name="start">Start</string>
     <string name="stop">Stop</string>
