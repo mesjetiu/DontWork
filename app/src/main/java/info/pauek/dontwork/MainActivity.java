@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity
     public static int OVERLAY_PERMISSION_REQ_CODE = 1;
     private DontWorkService service;
     private Button startButton;
+    private SeekBar barParam1, barParam2;
 
     public void requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -58,6 +60,20 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
 
         startButton = (Button)findViewById(R.id.button);
+        barParam1 = (SeekBar)findViewById(R.id.bar_param_1);
+        barParam2 = (SeekBar)findViewById(R.id.bar_param_2);
+        barParam1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.i("DontWork", String.format("Progress: %d", progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
     }
 
     private ServiceConnection connection;
@@ -73,7 +89,7 @@ public class MainActivity extends AppCompatActivity
                 DontWorkService.LocalBinder binder = (DontWorkService.LocalBinder)service;
                 MainActivity.this.service = binder.getService();
 
-                if (MainActivity.this.service.isBlocking()) {
+                if (MainActivity.this.service.isWatching()) {
                     startButton.setText(R.string.stop);
                 }
             }
@@ -102,12 +118,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onStartOrStop(View view) {
-        if (!service.isBlocking()) {
-            service.startBlocking();
+        if (!service.isWatching()) {
+            service.startWatching();
             startButton.setText(R.string.stop);
             startButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
         } else {
-            service.stopBlocking();
+            service.stopWatching();
             startButton.setText(R.string.start);
             startButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play, 0, 0, 0);
         }

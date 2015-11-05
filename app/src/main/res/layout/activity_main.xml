@@ -11,8 +11,8 @@
         android:id="@+id/textView3"
         android:layout_below="@+id/textView2"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"
-        android:textSize="20dp"
+        android:layout_marginTop="15dp"
+        android:textSize="17dp"
         android:textStyle="italic"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
@@ -25,20 +25,93 @@
         android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="30dp"
+        android:textSize="26dp"
         android:textStyle="bold"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/param_desc_1"
+        android:text="@string/param_total_screen_on"
+        android:layout_below="@+id/textView3"
+        android:layout_marginTop="25dp"
+        android:textStyle="italic"
+        android:layout_alignStart="@+id/textView3" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bar_param_1"
+        android:layout_below="@+id/param_desc_1"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:max="40"
+        android:progress="20"
+        android:indeterminate="false"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/param_text_1"
+        android:text="2 horas 30 minutos"
+        android:layout_below="@+id/bar_param_1"
+        android:layout_alignEnd="@+id/bar_param_1"
+        android:textSize="14dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/param_desc_2"
+        android:text="@string/max_screen_on_time"
+        android:layout_marginTop="25dp"
+        android:layout_below="@+id/param_text_1"
+        android:textStyle="italic"
+        android:layout_alignStart="@+id/param_desc_1" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bar_param_2"
+        android:layout_below="@+id/param_desc_2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:max="20"
+        android:progress="10"
+        android:indeterminate="false"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/param_text_2"
+        android:text="15 minutos"
+        android:textSize="14dp"
+        android:layout_below="@+id/bar_param_2"
+        android:layout_alignEnd="@+id/bar_param_2" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start"
         android:id="@+id/button"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
         android:onClick="onStartOrStop"
         android:drawableLeft="@android:drawable/ic_media_play"
         android:drawablePadding="10dp"
-        android:paddingEnd="20dp" />
+        android:paddingEnd="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp" />
+
 </RelativeLayout>

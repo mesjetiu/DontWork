@@ -8,4 +8,6 @@
 
     <string name="text_title">Don\'t work, ever</string>
     <string name="text_explanation">This app let\'s you guard against too much work. It will block your phone whenever you have already used it too much.</string>
+    <string name="param_total_screen_on">Total screen on time per day</string>
+    <string name="max_screen_on_time">Max continuous screen-on time</string>
 </resources>

@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,9 +30,32 @@ import android.view.WindowManager;
  */
 public class DontWorkService extends Service {
 
+    // Constants
+    private static final float hoursPerDay = 16.0f;
+
+    // Parameters
+    private float paramScreenOnPerDay = 2.0f; // 1 hour screen on time every day (16 hours of wake time)
+    private float paramMaxConsecutiveMinutes = 0.4f;
+
+    private float ratio; // the relative weight of screenOffTime with respect to screenOnTime
+
+    // State
+    private boolean watching = false;
+    private ScreenOnOffReceiver receiver = null;
+    private IntentFilter filter = null;
+    private boolean blocking = false;
+
     @Override
     public void onCreate() {
         Log.i("DontWork", "DontWorkService.onCreate");
+        receiver = new ScreenOnOffReceiver();
+        filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+
+        ratio = paramScreenOnPerDay / (hoursPerDay - paramScreenOnPerDay);
+        Log.i("DontWork", String.format("ratio = %.3f", ratio));
     }
 
     @Override
@@ -56,92 +78,193 @@ public class DontWorkService extends Service {
         }
     }
 
-    ScreenOnOffReceiver receiver = null;
-
-    public void startBlocking() {
-        Log.i("DontWork", "DontWorkService.startBlocking");
-        receiver = new ScreenOnOffReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
-        registerReceiver(receiver, filter);
+    public boolean isWatching() {
+        return watching;
     }
 
-    public void stopBlocking() {
-        Log.i("DontWork", "DontWorkService.stopBlocking");
-        unregisterReceiver(receiver);
-        receiver = null;
+    public void startWatching() {
+        Log.i("DontWork", "DontWorkService.startWatching");
+        reset();
+        registerScreenOnOffReceiver();
+        postTick(5000);
     }
 
-    public boolean isBlocking() {
-        return receiver != null;
+    public void stopWatching() {
+        Log.i("DontWork", "DontWorkService.stopWatching");
+        unregisterScreenOnOffReceiver();
+    }
+
+    private void registerScreenOnOffReceiver() {
+        if (!watching) {
+            registerReceiver(receiver, filter);
+            watching = true;
+        }
+    }
+
+    private void unregisterScreenOnOffReceiver() {
+        if (watching) {
+            unregisterReceiver(receiver);
+            watching = false;
+        }
     }
 
     private View blockScreenView;
 
+    private boolean screenOn = false;
+    private boolean screenUnlocked = false;
+    private long last = -1;
+    private int timesOn = 0;
+    private long totalOn = 0, totalOff = 0;
+    private float bucket = 0.0f; // the bucket fills with screen-on-time and empties with screen-off-time * ratio
+                                 // In minutes!
+
+    private void reset() {
+        // start counting now
+        totalOn = 0;
+        totalOff = 0;
+        bucket = 0.0f;
+        screenOn = true;       // can only call reset with startWatching and that is from the activity
+        screenUnlocked = true; // idem
+        last = System.currentTimeMillis();
+        timesOn = 1;
+    }
+
+    private void onScreenOff() {
+        if (screenUnlocked && !blocking) {
+            addOnTime();
+        }
+        last = System.currentTimeMillis();
+    }
+
+    private void onScreenUnlocked() {
+        if (!screenOn) {
+            Log.e("DontWork", "onScreenUnlocked and screenOn == false????");
+        }
+        addOffTime();
+        timesOn++;
+        if (!blocking) {
+            considerBlockingScreen();
+            if (!blocking) {
+                postTick(5000);
+            }
+        }
+    }
+
+    private void postTick(int millis) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tick();
+            }
+        }, millis);
+    }
+
+    private void tick() {
+        if (watching && screenUnlocked && !blocking) {
+            addOnTime();
+            considerBlockingScreen();
+            if (!blocking) {
+                postTick(5000);
+            }
+        }
+    }
+
+    private void considerBlockingScreen() {
+        if (blocking) {
+            return;
+        }
+        if (bucket > paramMaxConsecutiveMinutes) {
+            // block the screen to halve the size of the bucket
+            long blockTimeMillis = (long)((1 / ratio) * (bucket / 2 * 60 * 1000));
+            blockScreen(blockTimeMillis);
+        }
+    }
+
+    private void addOnTime() {
+        long diff = System.currentTimeMillis() - last;
+        totalOn += diff;
+        bucket += (float) diff / 60000.0f;
+        Log.i("DontWork", String.format("ON %.3f seconds (bucket %.3f)", (float) diff / 1000.0f, bucket));
+        last = System.currentTimeMillis();
+    }
+
+    private void addOffTime() {
+        long diff = System.currentTimeMillis() - last;
+        totalOff += diff;
+        bucket -= ((float)diff / 60000.0f) * ratio;
+        if (bucket < 0.0f) {
+            bucket = 0.0f;
+        }
+        Log.i("DontWork", String.format("OFF %.3f seconds (bucket %.3f)", (float) diff / 1000.0f, bucket));
+        last = System.currentTimeMillis();
+    }
+
     public class ScreenOnOffReceiver extends BroadcastReceiver {
-
-        private boolean screenOn = false;
-        private long lastOn = -1;
-        private int timesOn = 0;
-
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if (action.equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOn = false;
-                if (lastOn != -1) {
-                    long diff = System.currentTimeMillis() - lastOn;
-                    Log.i("DontWork", String.format("Screen on: %.3f seconds", (float) diff / 1000.0f));
-                    lastOn = -1;
-                }
-            } else if (action.equals(Intent.ACTION_SCREEN_ON)) {
-                screenOn = true;
-            } else if (action.equals(Intent.ACTION_USER_PRESENT)) {
-                if (screenOn) {
-                    lastOn = System.currentTimeMillis();
-                    timesOn++;
-                    if (timesOn % 3 == 0) {
-                        showBlockingScreen();
+            switch (action) {
+                case Intent.ACTION_SCREEN_OFF:
+                    if (watching) {
+                        onScreenOff();
                     }
-                }
+                    screenOn = false;
+                    screenUnlocked = false;
+                    break;
+                case Intent.ACTION_SCREEN_ON:
+                    screenOn = true;
+                    break;
+                case Intent.ACTION_USER_PRESENT:
+                    screenUnlocked = true;
+                    if (watching) {
+                        onScreenUnlocked();
+                    }
+                    break;
             }
         }
+    }
 
-        private void showBlockingScreen() {
-            Log.i("DontWork", "showBlockingScreen");
-            Rect displaySize = new Rect();
-            WindowManager wmgr = (WindowManager) getSystemService(WINDOW_SERVICE);
-            wmgr.getDefaultDisplay().getRectSize(displaySize);
-            Log.i("DontWork", String.format("DisplaySize is %d, %d", displaySize.width(), displaySize.height()));
+    private void blockScreen(long blockTimeMillis) {
+        blocking = true;
 
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            blockScreenView = inflater.inflate(R.layout.blockscreen, null);
+        Log.i("DontWork", String.format("Blocking screen for %.3f minutes", (float)blockTimeMillis / 60000.0f));
+        Rect displaySize = new Rect();
+        WindowManager wmgr = (WindowManager) getSystemService(WINDOW_SERVICE);
+        wmgr.getDefaultDisplay().getRectSize(displaySize);
 
-            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                    displaySize.width(),
-                    displaySize.height(),
-                    WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                    0,
-                    PixelFormat.TRANSLUCENT);
-            params.gravity = Gravity.CENTER;
-            params.setTitle("Load Average");
-            wmgr.addView(blockScreenView, params);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        blockScreenView = inflater.inflate(R.layout.blockscreen, null);
 
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    removeBlockingScreen();
-                }
-            }, 20000);
-        }
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                displaySize.width(),
+                displaySize.height(),
+                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                0,
+                PixelFormat.TRANSLUCENT);
+        params.gravity = Gravity.CENTER;
+        params.setTitle("Load Average");
+        wmgr.addView(blockScreenView, params);
 
-        private void removeBlockingScreen() {
-            Log.i("DontWork", "removeBlockingScreen");
-            WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-            wm.removeView(blockScreenView);
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                unblockScreen();
+            }
+        }, blockTimeMillis);
+    }
+
+    private void unblockScreen() {
+        addOffTime();
+        blocking = false;
+
+        Log.i("DontWork", "unblockScreen");
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        wm.removeView(blockScreenView);
+
+        if (screenOn) {
+            postTick(5000);
         }
     }
 }
