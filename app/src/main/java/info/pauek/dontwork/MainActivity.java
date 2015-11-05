@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity
     private DontWorkService service;
     private Button startButton;
     private SeekBar barParam1, barParam2;
+    private TextView textParam1, textParam2;
 
     public void requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -60,12 +62,25 @@ public class MainActivity extends AppCompatActivity
         startService(intent);
 
         startButton = (Button)findViewById(R.id.button);
+        textParam1 = (TextView)findViewById(R.id.param_text_1);
+        textParam2 = (TextView)findViewById(R.id.param_text_2);
         barParam1 = (SeekBar)findViewById(R.id.bar_param_1);
+        setParam1(barParam1.getProgress());
         barParam2 = (SeekBar)findViewById(R.id.bar_param_2);
+        setParam2(barParam2.getProgress());
         barParam1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.i("DontWork", String.format("Progress: %d", progress));
+                setParam1(progress);
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        barParam2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             }
 
             @Override
@@ -74,6 +89,24 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+    }
+
+    private void setParam1(int x) {
+        switch (x) {
+            case 0: service.setParam1(30); textParam1.setText("30m"); break;
+            case 1: service.setParam1(60); textParam1.setText("1h"); break;
+            case 2: service.setParam1(90); textParam1.setText("1h 30m"); break;
+            case 3: service.setParam1(120); textParam1.setText("2h"); break;
+            case 4: service.setParam1(150); textParam1.setText("2h 30m"); break;
+            case 5: service.setParam1(180); textParam1.setText("3h"); break;
+        }
+
+    }
+
+    private void setParam2(int x) {
+        int minutes = x + 5;
+        service.setParam2((float)minutes);
+        textParam2.setText(String.format("%d minutes", minutes));
     }
 
     private ServiceConnection connection;
@@ -89,9 +122,12 @@ public class MainActivity extends AppCompatActivity
                 DontWorkService.LocalBinder binder = (DontWorkService.LocalBinder)service;
                 MainActivity.this.service = binder.getService();
 
-                if (MainActivity.this.service.isWatching()) {
+                boolean isWatching = MainActivity.this.service.isWatching();
+                if (isWatching) {
                     startButton.setText(R.string.stop);
                 }
+                barParam1.setEnabled(!isWatching);
+                barParam2.setEnabled(!isWatching);
             }
 
             @Override
@@ -122,10 +158,14 @@ public class MainActivity extends AppCompatActivity
             service.startWatching();
             startButton.setText(R.string.stop);
             startButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_pause, 0, 0, 0);
+            barParam1.setEnabled(false);
+            barParam2.setEnabled(false);
         } else {
             service.stopWatching();
             startButton.setText(R.string.start);
             startButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play, 0, 0, 0);
+            barParam1.setEnabled(true);
+            barParam2.setEnabled(true);
         }
     }
 }

@@ -31,11 +31,14 @@ import android.view.WindowManager;
 public class DontWorkService extends Service {
 
     // Constants
-    private static final float hoursPerDay = 16.0f;
+    private static final float minutesPerDay = 16.0f * 60.0f;
 
     // Parameters
-    private float paramScreenOnPerDay = 2.0f; // 1 hour screen on time every day (16 hours of wake time)
-    private float paramMaxConsecutiveMinutes = 0.4f;
+    private float paramScreenOnMinutesPerDay = 60.0f; // 1 hour screen on time every day (16 hours of wake time)
+    private float paramMaxConsecutiveMinutes = 10.0f;
+
+    void setParam1(float x) { paramScreenOnMinutesPerDay = x; }
+    void setParam2(float x) { paramMaxConsecutiveMinutes = x; }
 
     private float ratio; // the relative weight of screenOffTime with respect to screenOnTime
 
@@ -53,9 +56,6 @@ public class DontWorkService extends Service {
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
-
-        ratio = paramScreenOnPerDay / (hoursPerDay - paramScreenOnPerDay);
-        Log.i("DontWork", String.format("ratio = %.3f", ratio));
     }
 
     @Override
@@ -84,6 +84,8 @@ public class DontWorkService extends Service {
 
     public void startWatching() {
         Log.i("DontWork", "DontWorkService.startWatching");
+        ratio = paramScreenOnMinutesPerDay / (minutesPerDay - paramScreenOnMinutesPerDay);
+        Log.i("DontWork", String.format("ratio = %.3f", ratio));
         reset();
         registerScreenOnOffReceiver();
         postTick(5000);
