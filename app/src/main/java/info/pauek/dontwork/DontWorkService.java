@@ -12,6 +12,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -79,18 +81,67 @@ public class DontWorkService extends Service {
 
     // State
     private boolean watching = false;
-    private ScreenOnOffReceiver receiver = null;
+    private DontWorkReceiver receiver = null;
     private IntentFilter filter = null;
     private boolean blocking = false;
+
+    private View blockScreenView;
+    private boolean blockingViewActive = false;
+    private WindowManager.LayoutParams blockViewParams;
+    private WindowManager wmgr;
 
     @Override
     public void onCreate() {
         Log.i("DontWork", "DontWorkService.onCreate");
-        receiver = new ScreenOnOffReceiver();
+        receiver = new DontWorkReceiver();
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
+        filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        blockScreenView = inflater.inflate(R.layout.blockscreen, null);
+
+        Rect displaySize = new Rect();
+        wmgr = (WindowManager) getSystemService(WINDOW_SERVICE);
+        wmgr.getDefaultDisplay().getRectSize(displaySize);
+
+        blockViewParams = new WindowManager.LayoutParams(
+                displaySize.width(),
+                displaySize.height(),
+                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+                0,
+                PixelFormat.TRANSLUCENT);
+        blockViewParams.gravity = Gravity.CENTER;
+        blockViewParams.setTitle("Load Average");
+
+        setupCallStateListener();
+    }
+
+    private void setupCallStateListener() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+        // Create a new PhoneStateListener
+        PhoneStateListener listener = new PhoneStateListener() {
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                switch (state) {
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        activateBlockingView();
+                        break;
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        deactivateBlockingView();
+                        break;
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        deactivateBlockingView();
+                        break;
+                }
+            }
+        };
+
+        // Register the listener with the telephony manager
+        telephonyManager.listen(listener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override
@@ -148,7 +199,6 @@ public class DontWorkService extends Service {
         }
     }
 
-    private View blockScreenView;
 
     private boolean screenOn = false;
     private boolean screenUnlocked = false;
@@ -240,7 +290,7 @@ public class DontWorkService extends Service {
         last = System.currentTimeMillis();
     }
 
-    public class ScreenOnOffReceiver extends BroadcastReceiver {
+    public class DontWorkReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -269,22 +319,7 @@ public class DontWorkService extends Service {
         blocking = true;
 
         Log.i("DontWork", String.format("Blocking screen for %.3f minutes", (float)blockTimeMillis / 60000.0f));
-        Rect displaySize = new Rect();
-        WindowManager wmgr = (WindowManager) getSystemService(WINDOW_SERVICE);
-        wmgr.getDefaultDisplay().getRectSize(displaySize);
-
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        blockScreenView = inflater.inflate(R.layout.blockscreen, null);
-
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                displaySize.width(),
-                displaySize.height(),
-                WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
-                0,
-                PixelFormat.TRANSLUCENT);
-        params.gravity = Gravity.CENTER;
-        params.setTitle("Load Average");
-        wmgr.addView(blockScreenView, params);
+        activateBlockingView();
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
@@ -300,11 +335,31 @@ public class DontWorkService extends Service {
         blocking = false;
 
         Log.i("DontWork", "unblockScreen");
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        wm.removeView(blockScreenView);
+        wmgr.removeView(blockScreenView);
 
         if (screenOn) {
             postTick(5000);
+        }
+    }
+
+    private void activateBlockingView() {
+        if (!blocking) {
+            return;
+        }
+        if (!blockingViewActive) {
+            wmgr.addView(blockScreenView, blockViewParams);
+            blockingViewActive = true;
+        }
+
+    }
+
+    private void deactivateBlockingView() {
+        if (!blocking) {
+            return;
+        }
+        if (blockingViewActive) {
+            wmgr.removeView(blockScreenView);
+            blockingViewActive = false;
         }
     }
 }
