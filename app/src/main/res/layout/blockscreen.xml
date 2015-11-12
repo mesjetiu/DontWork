@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent" android:layout_height="fill_parent"
-    android:background="#b90000">
+    android:background="#000000">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -9,6 +9,6 @@
         android:id="@+id/imageView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/stop"
-        android:layout_margin="30dp" />
+        android:src="@drawable/ntj"
+        android:scaleType="fitXY" />
 </RelativeLayout>

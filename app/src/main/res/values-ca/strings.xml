@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">No treballis</string>
     <string name="hour">hora</string>
     <string name="hours">hores</string>
     <string name="max_screen_on_time">Temps màxim continu</string>
