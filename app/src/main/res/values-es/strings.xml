@@ -8,6 +8,6 @@
     <string name="permission_not_granted">Permiso para bloquear la pantalla denegado. Saliendo.</string>
     <string name="start">Empezar</string>
     <string name="stop">Parar</string>
-    <string name="text_explanation">Esta aplicación te protege contra el exceso de trabajo. Te bloqueará la pantalla del teléfono cuando lo hayas usado demasiado ya.</string>
+    <string name="text_explanation">Esta aplicación te protege contra el exceso de trabajo. Te bloqueará la pantalla del teléfono cuando lo hayas usado demasiado.</string>
     <string name="text_title">No trabajes, jamás</string>
 </resources>

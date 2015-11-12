@@ -11,10 +11,19 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        release {
+            storeFile file("/home/pauek/src/pauek/android/pauek.info.keystore")
+            keyAlias "pauek"
+            storePassword System.getenv("KEYSTOREPASSWD")
+            keyPassword System.getenv("KEYPASSWD")
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
     }
 }
