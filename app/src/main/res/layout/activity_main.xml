@@ -97,7 +97,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#57e44444"
+            android:background="@drawable/roundedred"
             android:padding="15dp"
             android:id="@+id/detail_box"
             android:onClick="onClickDetails">
