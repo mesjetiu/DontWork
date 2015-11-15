@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/scroll_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     tools:context=".MainActivity">
@@ -95,7 +97,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#29ff493f"
+            android:background="#57e44444"
             android:padding="15dp"
             android:id="@+id/detail_box"
             android:onClick="onClickDetails">
@@ -145,6 +147,14 @@
                     android:id="@+id/detail_text_4"
                     android:textSize="14sp"
                     android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:text="@string/detail_text_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_text_5"
+                    android:textSize="14sp"
+                    android:layout_marginTop="10dp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -157,7 +167,7 @@
             android:onClick="onStartOrStop"
             android:drawableStart="@android:drawable/ic_media_play"
             android:drawablePadding="10dp"
-            android:paddingStart="0dp"
+            android:paddingStart="8dp"
             android:paddingEnd="20dp"
             android:layout_marginTop="18dp"
             android:layout_gravity="center_horizontal"

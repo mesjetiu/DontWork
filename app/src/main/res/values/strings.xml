@@ -15,10 +15,12 @@
     </string>
 
     <string name="details">Details</string>
-    <string name="detail_text_1">The app uses a time bucket to know when to block the phone. The bucket has the size of your max continuous session.</string>
-    <string name="detail_text_2">When you use your phone, the bucket drains, and when you don\'t use it, it fills. The drain and fill rates are determined by your target time.</string>
-    <string name="detail_text_3">If you want to use your phone 2 hours a day, then the fill rate is 11 times less than the drain rate, so for every 11 minutes of rest time, you will get 1 minute of use time.</string>
-    <string name="detail_text_4">When you empty the bucket, the phone will block for a period of time such that the bucket is half full.</string>
+    <string name="detail_text_1" formatted="false">The app uses a time bucket to know when to block the phone. The bucket has the size of your "max continuous time" (%s).</string>
+    <string name="detail_text_2" formatted="false">When you use your phone, the bucket drains, and when the phone is off, it fills. The drain and fill rates are determined by your target time (%s).</string>
+    <string name="detail_text_3" formatted="false">With the current settings, the fill rate is about %d times slower than the drain rate, so for every %d minutes that the phone is off, you will get 1 minute of use time.</string>
+    <string name="detail_text_4" formatted="false">When the bucket is empty, the phone is blocked until the bucket is filled back to half its capacity. With the current settings, that would be %d minutes.</string>
+    <string name="detail_text_5"                  >Also, to discourage compulsive use, just unlocking the phone counts as 1 minute of use.</string>
+
 
     <string name="param_total_screen_on">Target time per day</string>
     <string name="max_screen_on_time">Max continuous time</string>

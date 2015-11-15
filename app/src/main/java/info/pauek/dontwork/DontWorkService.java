@@ -63,7 +63,11 @@ public class DontWorkService extends Service {
             String sminutes = getResources().getString(R.string.minutes);
             sm = String.format("%d %s", M, sminutes);
         }
-        return sh + " " + sm;
+        String result = sh;
+        if (!sm.isEmpty()) {
+            result = result + " " + sm;
+        }
+        return result;
     }
 
     public void setParam2(int x) {
@@ -72,12 +76,33 @@ public class DontWorkService extends Service {
         paramMaxConsecutiveMinutes = (float)minutes;
     }
 
-    public String getTextParam2() {
-        int minutes = param2 + 5;
-        return String.format("%d minutes", minutes);
+    public int getMinutesParam2() {
+        return param2 + 5;
     }
 
-    private float ratio; // the relative weight of screenOffTime with respect to screenOnTime
+    public String getTextParam2() {
+        return String.format("%d minutes", getMinutesParam2());
+    }
+
+    public String getTextDetail3() {
+        String template = getString(R.string.detail_text_3);
+        int ratio = (int)(1.0f / getRatio());
+        return String.format(template, ratio, ratio);
+    }
+
+    public String getTextDetail4() {
+        String template = getString(R.string.detail_text_4);
+        int blockTimeMinutes = getBlockTimeMinutes();
+        return String.format(template, blockTimeMinutes);
+    }
+
+    public float getRatio() {
+        return paramScreenOnMinutesPerDay / (minutesPerDay - paramScreenOnMinutesPerDay);
+    }
+
+    public int getBlockTimeMinutes() {
+        return (int)((1 / getRatio()) * (paramMaxConsecutiveMinutes / 2.0f));
+    }
 
     // State
     private boolean watching = false;
@@ -173,8 +198,7 @@ public class DontWorkService extends Service {
 
     public void startWatching() {
         Log.i("DontWork", "DontWorkService.startWatching");
-        ratio = paramScreenOnMinutesPerDay / (minutesPerDay - paramScreenOnMinutesPerDay);
-        Log.i("DontWork", String.format("ratio = %.3f", ratio));
+        Log.i("DontWork", String.format("ratio = %.3f", getRatio()));
         reset();
         registerScreenOnOffReceiver();
         postTick(5000);
@@ -266,7 +290,7 @@ public class DontWorkService extends Service {
         }
         if (bucket > paramMaxConsecutiveMinutes) {
             // block the screen to halve the size of the bucket
-            long blockTimeMillis = (long)((1 / ratio) * (bucket / 2 * 60 * 1000));
+            long blockTimeMillis = (long)(getBlockTimeMinutes() * 60 * 1000);
             blockScreen(blockTimeMillis);
         }
     }
@@ -282,7 +306,7 @@ public class DontWorkService extends Service {
     private void addOffTime() {
         long diff = System.currentTimeMillis() - last;
         totalOff += diff;
-        bucket -= ((float)diff / 60000.0f) * ratio;
+        bucket -= ((float)diff / 60000.0f) * getRatio();
         if (bucket < 0.0f) {
             bucket = 0.0f;
         }

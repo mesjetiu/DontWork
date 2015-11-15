@@ -13,6 +13,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,10 +21,14 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
 {
     public static int OVERLAY_PERMISSION_REQ_CODE = 1;
+
     private DontWorkService service;
+    private ScrollView scrollView;
     private Button startButton;
     private SeekBar barParam1, barParam2;
     private TextView textParam1, textParam2;
+    private TextView textDetail1, textDetail2, textDetail3, textDetail4;
+
     private boolean visibleDetails = true;
 
     public void requestOverlayPermission() {
@@ -63,9 +68,14 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, DontWorkService.class);
         startService(intent);
 
+        scrollView = (ScrollView)findViewById(R.id.scroll_view);
         startButton = (Button)findViewById(R.id.button);
         textParam1 = (TextView)findViewById(R.id.param_text_1);
         textParam2 = (TextView)findViewById(R.id.param_text_2);
+        textDetail1 = (TextView)findViewById(R.id.detail_text_1);
+        textDetail2 = (TextView)findViewById(R.id.detail_text_2);
+        textDetail3 = (TextView)findViewById(R.id.detail_text_3);
+        textDetail4 = (TextView)findViewById(R.id.detail_text_4);
         barParam1 = (SeekBar)findViewById(R.id.bar_param_1);
         barParam2 = (SeekBar)findViewById(R.id.bar_param_2);
 
@@ -74,7 +84,7 @@ public class MainActivity extends AppCompatActivity
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (service != null) {
                     service.setParam1(progress);
-                    textParam1.setText(service.getTextParam1());
+                    updateTexts();
                 }
             }
 
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (service != null) {
                     service.setParam2(progress);
-                    textParam2.setText(service.getTextParam2());
+                    updateTexts();
                 }
             }
 
@@ -97,6 +107,15 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+    }
+
+    private void updateTexts() {
+        textParam1.setText(service.getTextParam1());
+        textParam2.setText(service.getTextParam2());
+        textDetail1.setText(String.format(getString(R.string.detail_text_1), service.getTextParam2()));
+        textDetail2.setText(String.format(getString(R.string.detail_text_2), service.getTextParam1()));
+        textDetail3.setText(service.getTextDetail3());
+        textDetail4.setText(service.getTextDetail4());
     }
 
     private ServiceConnection connection;
@@ -119,14 +138,11 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 DontWorkService srv = MainActivity.this.service;
-
-                textParam1.setText(srv.getTextParam1());
                 barParam1.setProgress(srv.getParam1());
-                barParam1.setEnabled(!isWatching);
-
-                textParam2.setText(srv.getTextParam2());
                 barParam2.setProgress(srv.getParam2());
+                barParam1.setEnabled(!isWatching);
                 barParam2.setEnabled(!isWatching);
+                updateTexts();
             }
 
             @Override
@@ -175,6 +191,12 @@ public class MainActivity extends AppCompatActivity
             detail_text.setVisibility(View.GONE);
         } else {
             detail_text.setVisibility(View.VISIBLE);
+            scrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            });
         }
     }
 }
