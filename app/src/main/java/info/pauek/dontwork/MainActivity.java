@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onMenuAbout(MenuItem item) {
-        Log.i("DontWork", "About!");
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 }

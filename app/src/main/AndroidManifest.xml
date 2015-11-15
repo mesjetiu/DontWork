@@ -24,6 +24,8 @@
 
         <activity android:name=".QuoteActivity" >
         </activity>
+        <activity android:name=".AboutActivity" >
+        </activity>
     </application>
 
 </manifest>
