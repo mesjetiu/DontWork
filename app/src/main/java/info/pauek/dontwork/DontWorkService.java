@@ -33,12 +33,12 @@ import android.view.WindowManager;
 public class DontWorkService extends Service {
 
     // Constants
-    private static final float minutesPerDay = 16.0f * 60.0f;
+    private static final float minutesPerDay = 24.0f * 60.0f;
 
     // Parameters
     private int param1 = 1; // 1h
     private int param2 = 5; // 10 minutes
-    private float paramScreenOnMinutesPerDay = 60.0f; // 1 hour screen on time every day (16 hours of wake time)
+    private float paramScreenOnMinutesPerDay = 60.0f; // 1 hour screen on time every day
     private float paramMaxConsecutiveMinutes = 10.0f;
 
     public void setParam1(int x) {

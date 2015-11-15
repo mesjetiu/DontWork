@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity
     private Button startButton;
     private SeekBar barParam1, barParam2;
     private TextView textParam1, textParam2;
+    private boolean visibleDetails = true;
 
     public void requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity
         textParam2 = (TextView)findViewById(R.id.param_text_2);
         barParam1 = (SeekBar)findViewById(R.id.bar_param_1);
         barParam2 = (SeekBar)findViewById(R.id.bar_param_2);
+
         barParam1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -162,6 +165,16 @@ public class MainActivity extends AppCompatActivity
             startButton.setCompoundDrawablesWithIntrinsicBounds(android.R.drawable.ic_media_play, 0, 0, 0);
             barParam1.setEnabled(true);
             barParam2.setEnabled(true);
+        }
+    }
+
+    public void onClickDetails(View view) {
+        visibleDetails = !visibleDetails;
+        View detail_text = view.findViewById(R.id.detail_text);
+        if (!visibleDetails) {
+            detail_text.setVisibility(View.GONE);
+        } else {
+            detail_text.setVisibility(View.VISIBLE);
         }
     }
 }

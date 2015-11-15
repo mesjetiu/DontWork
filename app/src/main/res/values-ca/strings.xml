@@ -8,6 +8,6 @@
     <string name="permission_not_granted">Permís per bloquejar la pantalla denegat. Sortint.</string>
     <string name="start">Començar</string>
     <string name="stop">Parar</string>
-    <string name="text_explanation">Aquesta aplicació et protegeix contra l\'excés de feina. Et bloquejarà la pantalla quan ja hagis treballat massa.</string>
+    <string name="text_explanation_1">Aquesta aplicació et protegeix contra l\'excés de feina. Et bloquejarà la pantalla quan ja hagis treballat massa.</string>
     <string name="text_title">No treballis, mai</string>
 </resources>

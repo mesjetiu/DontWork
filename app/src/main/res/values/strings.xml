@@ -7,10 +7,23 @@
     <string name="permission_not_granted">Permission to block screen not granted. Exiting.</string>
 
     <string name="text_title">Don\'t work, ever</string>
-    <string name="text_explanation">This app let\'s you guard against too much work. It will block your phone whenever you have already used it too much.</string>
+    <string name="text_explanation_1">
+        This app allows you to limit the time and frequency of use of your mobile device, blocking it completely.
+    </string>
+    <string name="text_explanation_2">
+        Set the following parameters and protect your time and your mind. Don\'t become a subject of performance.
+    </string>
+
+    <string name="details">Details</string>
+    <string name="detail_text_1">The app uses a time bucket to know when to block the phone. The bucket has the size of your max continuous session.</string>
+    <string name="detail_text_2">When you use your phone, the bucket drains, and when you don\'t use it, it fills. The drain and fill rates are determined by your target time.</string>
+    <string name="detail_text_3">If you want to use your phone 2 hours a day, then the fill rate is 11 times less than the drain rate, so for every 11 minutes of rest time, you will get 1 minute of use time.</string>
+    <string name="detail_text_4">When you empty the bucket, the phone will block for a period of time such that the bucket is half full.</string>
+
     <string name="param_total_screen_on">Target time per day</string>
     <string name="max_screen_on_time">Max continuous time</string>
     <string name="minutes">minutes</string>
     <string name="hour">hour</string>
     <string name="hours">hours</string>
+
 </resources>
