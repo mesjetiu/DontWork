@@ -81,7 +81,7 @@ public class DontWorkService extends Service {
     }
 
     public String getTextParam2() {
-        return String.format("%d minutes", getMinutesParam2());
+        return String.format("%d %s", getMinutesParam2(), getString(R.string.minutes));
     }
 
     public String getTextDetail3() {

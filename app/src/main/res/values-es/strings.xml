@@ -8,6 +8,13 @@
     <string name="permission_not_granted">Permiso para bloquear la pantalla denegado. Saliendo.</string>
     <string name="start">Empezar</string>
     <string name="stop">Parar</string>
-    <string name="text_explanation_1">Esta aplicación te protege contra el exceso de trabajo. Te bloqueará la pantalla del teléfono cuando lo hayas usado demasiado.</string>
+    <string name="text_explanation_1">Esta aplicación te permite limitar el tiempo y frecuencia de uso de tu dispositivo móvil, bloqueando su acceso completamente.</string>
     <string name="text_title">No trabajes, jamás</string>
+    <string name="detail_text_1" formatted="false">La aplicación utiliza la analogía de un depósito de tiempo para saber cuando bloquear el dispositivo. El tamaño del depósito es siempre el tiempo máximo continuo (%s).</string>
+    <string name="detail_text_2" formatted="false">Al usar el dispositivo, el deposito se vacía, y con el dispositivo apagado, el depoósito se llena. La velocidad de vaciado y llenado se determinan con tu objetivo de uso diario (%s).</string>
+    <string name="detail_text_3" formatted="false">Con la configuración actual, la rapidez de llenado es %d veces más lenta que la de vaciado, así que para cada %d minutos que el dispositivo ha estado apagado se obtiene 1 minuto de uso.</string>
+    <string name="detail_text_4" formatted="false">Cuando el depósito se vacía, el dispositivo se bloquea hasta que el depósito se llene hasta la mitad, que serian %d minutos.</string>
+    <string name="detail_text_5" formatted="false">Además, para evitar el uso compulsivo, solo por desbloquear el dispositivo se añade 1 minuto de uso.</string>
+    <string name="details">Detalles</string>
+    <string name="text_explanation_2">Configura los siguientes parámetros y protege tu tiempo y tu pensamiento. No te conviertas en un sujeto del rendimiento.</string>
 </resources>

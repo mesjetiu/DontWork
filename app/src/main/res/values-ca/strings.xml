@@ -8,6 +8,13 @@
     <string name="permission_not_granted">Permís per bloquejar la pantalla denegat. Sortint.</string>
     <string name="start">Començar</string>
     <string name="stop">Parar</string>
-    <string name="text_explanation_1">Aquesta aplicació et protegeix contra l\'excés de feina. Et bloquejarà la pantalla quan ja hagis treballat massa.</string>
+    <string name="text_explanation_1">Aquesta aplicació et permet limitar el temps i freqüència d\'ús del teu dispositiu mòbil, bloquejant totalment el seu accés.</string>
     <string name="text_title">No treballis, mai</string>
+    <string name="text_explanation_2">Configura els següents paràmetres i protegeix el teu temps i la teva ment. No et converteixis en un subjecte del rendiment.</string>
+    <string name="detail_text_1" formatted="false">L\'aplicació utilitza l\'analogia d\'un dipòsit de temps per saber quan ha de bloquejar el dispositiu. El tamany del dipòsit és el temps màxim continu (%s).</string>
+    <string name="detail_text_2" formatted="false">Quan utilitzes el dispositiu, el dipòsit es buida, i quan no l\'utilitzes, s\'omple. La velocitat a la que es buida i s\'omple es determina amb el teu objectiu d\'ús diari.</string>
+    <string name="detail_text_3" formatted="false">Amb la configuració actual, el dipòsit s\'omple unes %d vegades més lentament que es buida, així que cada %d minuts de no utilitzar-lo, obtindràs 1 minut d\'ús.</string>
+    <string name="detail_text_4" formatted="false">Quan el dipòsit es buida, el dispositiu es bloqueja fins que el dipòsit estigui ple fins a la meitat. Amb la configuració actual, això serien %d minuts.</string>
+    <string name="detail_text_5" formatted="false">També, per no encoratjar l\'ús compulsiu, només desbloquejar el dispositiu compta com 1 minut d\'ús.</string>
+    <string name="details">Detalls</string>
 </resources>
