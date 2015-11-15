@@ -15,6 +15,6 @@
     <string name="detail_text_2" formatted="false">Quan utilitzes el dispositiu, el dipòsit es buida, i quan no l\'utilitzes, s\'omple. La velocitat a la que es buida i s\'omple es determina amb el teu objectiu d\'ús diari.</string>
     <string name="detail_text_3" formatted="false">Amb la configuració actual, el dipòsit s\'omple unes %d vegades més lentament que es buida, així que cada %d minuts de no utilitzar-lo, obtindràs 1 minut d\'ús.</string>
     <string name="detail_text_4" formatted="false">Quan el dipòsit es buida, el dispositiu es bloqueja fins que el dipòsit estigui ple fins a la meitat. Amb la configuració actual, això serien %d minuts.</string>
-    <string name="detail_text_5" formatted="false">També, per no encoratjar l\'ús compulsiu, només desbloquejar el dispositiu compta com 1 minut d\'ús.</string>
+    <string name="detail_text_5" formatted="false">També, per descoratjar l\'ús compulsiu, només desbloquejar el dispositiu compta com 1 minut d\'ús.</string>
     <string name="details">Detalls</string>
 </resources>

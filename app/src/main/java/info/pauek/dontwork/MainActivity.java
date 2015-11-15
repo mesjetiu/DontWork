@@ -13,6 +13,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -187,10 +188,13 @@ public class MainActivity extends AppCompatActivity
     public void onClickDetails(View view) {
         visibleDetails = !visibleDetails;
         View detail_text = view.findViewById(R.id.detail_text);
+        ImageView flecha = (ImageView)view.findViewById(R.id.flecha);
         if (!visibleDetails) {
             detail_text.setVisibility(View.GONE);
+            flecha.setImageDrawable(getResources().getDrawable(android.R.drawable.arrow_down_float));
         } else {
             detail_text.setVisibility(View.VISIBLE);
+            flecha.setImageDrawable(getResources().getDrawable(android.R.drawable.arrow_up_float));
             scrollView.post(new Runnable() {
                 @Override
                 public void run() {

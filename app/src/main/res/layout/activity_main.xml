@@ -102,13 +102,30 @@
             android:id="@+id/detail_box"
             android:onClick="onClickDetails">
 
-            <TextView
-                android:text="@string/details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/detail_title"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="@string/details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_title"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/flecha"
+                    android:layout_gravity="top"
+                    android:layout_alignParentEnd="false"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="false"
+                    android:src="@android:drawable/arrow_up_float"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:orientation="vertical"
