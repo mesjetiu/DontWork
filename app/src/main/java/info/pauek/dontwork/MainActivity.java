@@ -3,6 +3,7 @@ package info.pauek.dontwork;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity
     private TextView textDetail1, textDetail2, textDetail3, textDetail4;
 
     private boolean visibleDetails = true;
+    private LinearLayout detail_text;
+    private ImageView flecha;
 
     public void requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public static final String PREFS_NAME = "info.pauek.dontwork.prefs";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,16 +75,33 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, DontWorkService.class);
         startService(intent);
 
-        scrollView = (ScrollView)findViewById(R.id.scroll_view);
+        // Determine if this is the first time we run.
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean firstRun = settings.getBoolean("firstRun", true);
+        if (firstRun) {
+            // Lanzar actividad con la cita del filósofo
+            Toast.makeText(this, "Cita filósofo", Toast.LENGTH_SHORT).show();
+
+            // Never again...
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putBoolean("firstRun", false);
+            editor.commit();
+        } else {
+            hideDetails();
+        }
+
+        scrollView  = (ScrollView)findViewById(R.id.scroll_view);
         startButton = (Button)findViewById(R.id.button);
-        textParam1 = (TextView)findViewById(R.id.param_text_1);
-        textParam2 = (TextView)findViewById(R.id.param_text_2);
+        detail_text = (LinearLayout)findViewById(R.id.detail_text);
+        flecha      = (ImageView)findViewById(R.id.flecha);
+        textParam1  = (TextView)findViewById(R.id.param_text_1);
+        textParam2  = (TextView)findViewById(R.id.param_text_2);
         textDetail1 = (TextView)findViewById(R.id.detail_text_1);
         textDetail2 = (TextView)findViewById(R.id.detail_text_2);
         textDetail3 = (TextView)findViewById(R.id.detail_text_3);
         textDetail4 = (TextView)findViewById(R.id.detail_text_4);
-        barParam1 = (SeekBar)findViewById(R.id.bar_param_1);
-        barParam2 = (SeekBar)findViewById(R.id.bar_param_2);
+        barParam1   = (SeekBar)findViewById(R.id.bar_param_1);
+        barParam2   = (SeekBar)findViewById(R.id.bar_param_2);
 
         barParam1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -187,11 +210,8 @@ public class MainActivity extends AppCompatActivity
 
     public void onClickDetails(View view) {
         visibleDetails = !visibleDetails;
-        View detail_text = view.findViewById(R.id.detail_text);
-        ImageView flecha = (ImageView)view.findViewById(R.id.flecha);
         if (!visibleDetails) {
-            detail_text.setVisibility(View.GONE);
-            flecha.setImageDrawable(getResources().getDrawable(android.R.drawable.arrow_down_float));
+            hideDetails();
         } else {
             detail_text.setVisibility(View.VISIBLE);
             flecha.setImageDrawable(getResources().getDrawable(android.R.drawable.arrow_up_float));
@@ -202,5 +222,10 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
+    }
+
+    public void hideDetails() {
+        detail_text.setVisibility(View.GONE);
+        flecha.setImageDrawable(getResources().getDrawable(android.R.drawable.arrow_down_float));
     }
 }
