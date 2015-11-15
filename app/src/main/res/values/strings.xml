@@ -28,4 +28,19 @@
     <string name="hour">hour</string>
     <string name="hours">hours</string>
 
+    <string name="quote">
+        \"Los aparatos digitales traen una
+        nueva coacción, una nueva esclavitud.
+        Nos explotan de manera más eficiente
+        por cuanto, en virtud de su movilidad,
+        transforman todo lugar en un puesto de
+        trabajo y todo tiempo es un tiempo de
+        trabajo. La libertad de la movilidad se
+        trueca en la coacción fatal de tener que
+        trabajar en todas partes.\"
+    </string>
+    <string name="author">&#8212; Byung Chul Han</string>
+    <string name="show_quote">Show quote</string>
+    <string name="about">About this app</string>
+
 </resources>

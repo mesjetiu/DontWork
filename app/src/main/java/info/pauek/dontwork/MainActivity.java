@@ -12,6 +12,9 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,12 +39,15 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout detail_text;
     private ImageView flecha;
 
+    private boolean requestedPermission = false;
+
     public void requestOverlayPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
                 startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+                requestedPermission = true;
             }
         }
     }
@@ -58,9 +64,22 @@ public class MainActivity extends AppCompatActivity
                         Toast.LENGTH_SHORT
                     ).show();
                     finish();
+                } else {
+                    showQuote(true);
                 }
             }
         }
+    }
+
+    private void showQuote(boolean firstTime) {
+        Intent quote_intent = new Intent(this, QuoteActivity.class);
+        quote_intent.putExtra(QuoteActivity.firstTime, firstTime);
+        startActivity(quote_intent);
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("firstRun", false);
+        editor.commit();
     }
 
     public static final String PREFS_NAME = "info.pauek.dontwork.prefs";
@@ -74,21 +93,6 @@ public class MainActivity extends AppCompatActivity
         // Start service
         Intent intent = new Intent(this, DontWorkService.class);
         startService(intent);
-
-        // Determine if this is the first time we run.
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        boolean firstRun = settings.getBoolean("firstRun", true);
-        if (firstRun) {
-            // Lanzar actividad con la cita del filósofo
-            Toast.makeText(this, "Cita filósofo", Toast.LENGTH_SHORT).show();
-
-            // Never again...
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putBoolean("firstRun", false);
-            editor.commit();
-        } else {
-            hideDetails();
-        }
 
         scrollView  = (ScrollView)findViewById(R.id.scroll_view);
         startButton = (Button)findViewById(R.id.button);
@@ -131,6 +135,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+
+        // Determine if this is the first time we run.
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean firstRun = settings.getBoolean("firstRun", true);
+        if (firstRun) {
+            if (!requestedPermission) {
+                showQuote(true);
+            }
+        } else {
+            hideDetails();
+        }
     }
 
     private void updateTexts() {
@@ -147,6 +162,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+        Log.i("DontWork", "onStart");
 
         // Bind to service
         connection = new ServiceConnection() {
@@ -208,6 +225,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
     public void onClickDetails(View view) {
         visibleDetails = !visibleDetails;
         if (!visibleDetails) {
@@ -225,7 +249,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void hideDetails() {
+        Log.i("DontWork", "hideDetails");
         detail_text.setVisibility(View.GONE);
         flecha.setImageDrawable(getResources().getDrawable(android.R.drawable.arrow_down_float));
+        visibleDetails = false;
+    }
+
+    public void onMenuShowQuote(MenuItem item) {
+        showQuote(false);
+    }
+
+    public void onMenuAbout(MenuItem item) {
+        Log.i("DontWork", "About!");
     }
 }
