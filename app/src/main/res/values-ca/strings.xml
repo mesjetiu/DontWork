@@ -32,6 +32,12 @@
         a tot arreu.\"
     </string>
 
-    <string name="about_text"><b>Ne Travaillez Jamais</b> ha estat desenvolupada per <a href="http://pauek.info">Pau Fernández</a> (<a href="https://twitter.com/pauek">@pauek</a>) en col·laboració amb <a href="http://www.pacochanivet.com">Paco Chanivet</a> per a la seva obra \"<a href="http://www.adngaleria.com/web/pag/pfitxa_img.asp?t=2&amp;id=3068&amp;o=4&amp;la=en">Jornada de 8 actos</a>\".</string>
-
+    <string name="about_text"><b>Ne Travaillez Jamais</b> ha estat desenvolupada per\n
+        <a href="http://pauek.info">Pau Fernández</a> (<a href="https://twitter.com/pauek">@pauek</a>) en col·laboració amb\n
+        <a href="http://www.pacochanivet.com">Paco Chanivet</a> per a la seva obra\n
+        \"<a href="http://www.adngaleria.com/web/pag/pfitxa_img.asp?t=2&amp;id=3068&amp;o=4&amp;la=en">Jornada de 8 actos</a>\".<br />
+    </string>
+    <string name="source">
+        El codi font està disponible a:\n<a href="https://github.com/pauek/dontwork">github.com/pauek/DontWork</a>.
+    </string>
 </resources>

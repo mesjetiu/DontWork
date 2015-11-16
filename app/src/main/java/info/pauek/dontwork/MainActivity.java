@@ -110,7 +110,9 @@ public class MainActivity extends AppCompatActivity
 
         // Make links in about text clickable
         TextView about_text = (TextView) findViewById(R.id.about_text);
+        TextView source_text = (TextView) findViewById(R.id.source_text);
         about_text.setMovementMethod(LinkMovementMethod.getInstance());
+        source_text.setMovementMethod(LinkMovementMethod.getInstance());
 
         barParam1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
