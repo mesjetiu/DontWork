@@ -37,6 +37,6 @@
     <string name="show_quote">Show quote</string>
     <string name="about">About this app</string>
 
-    <string name="about_text"><b>Ne Travaillez Jamais</b> has been developed by <a href="http://pauek.info">Pau Fernández</a> (<a href="https://twitter.com/pauek">@pauek</a>) in collaboration with Paco Chanivet for his work \"Jornada de 8 actos\".</string>
+    <string name="about_text"><b>Ne Travaillez Jamais</b> has been developed by <a href="http://pauek.info">Pau Fernández</a> (<a href="https://twitter.com/pauek">@pauek</a>) in collaboration with <a href="http://www.pacochanivet.com">Paco Chanivet</a> for his project \"<a href="http://www.adngaleria.com/web/pag/pfitxa_img.asp?t=2&amp;id=3068&amp;o=4&amp;la=en">8 Acts Working Day</a>\".</string>
 
 </resources>
