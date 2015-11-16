@@ -6,10 +6,4 @@
         android:onClick="onMenuShowQuote"
         app:showAsAction="never"
         />
-
-    <item
-        android:title="@string/about"
-        android:onClick="onMenuAbout"
-        app:showAsAction="never"
-        />
 </menu>

@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -106,6 +107,10 @@ public class MainActivity extends AppCompatActivity
         textDetail4 = (TextView)findViewById(R.id.detail_text_4);
         barParam1   = (SeekBar)findViewById(R.id.bar_param_1);
         barParam2   = (SeekBar)findViewById(R.id.bar_param_2);
+
+        // Make links in about text clickable
+        TextView about_text = (TextView) findViewById(R.id.about_text);
+        about_text.setMovementMethod(LinkMovementMethod.getInstance());
 
         barParam1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -257,10 +262,5 @@ public class MainActivity extends AppCompatActivity
 
     public void onMenuShowQuote(MenuItem item) {
         showQuote(false);
-    }
-
-    public void onMenuAbout(MenuItem item) {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
     }
 }

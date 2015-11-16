@@ -16,5 +16,22 @@
     <string name="detail_text_4" formatted="false">Cuando el depósito se vacía, el dispositivo se bloquea hasta que el depósito se llene hasta la mitad, que serian %d minutos.</string>
     <string name="detail_text_5" formatted="false">Además, para evitar el uso compulsivo, solo por desbloquear el dispositivo se añade 1 minuto de uso.</string>
     <string name="details">Detalles</string>
-    <string name="text_explanation_2">Configura los siguientes parámetros y protege tu tiempo y tu pensamiento. No te conviertas en un sujeto del rendimiento.</string>
+    <string name="text_explanation_2">Configura los siguientes parámetros y protege tu tiempo y tu pensamiento. No te conviertas en un sujeto de rendimiento.</string>
+    <string name="about">Acerca de esta app</string>
+    <string name="show_quote">Muestra la cita</string>
+
+    <string name="quote">
+        \"Los aparatos digitales traen una
+        nueva coacción, una nueva esclavitud.
+        Nos explotan de manera más eficiente
+        por cuanto, en virtud de su movilidad,
+        transforman todo lugar en un puesto de
+        trabajo y todo tiempo es un tiempo de
+        trabajo. La libertad de la movilidad se
+        trueca en la coacción fatal de tener que
+        trabajar en todas partes.\"
+    </string>
+
+    <string name="about_text"><b>Ne Travaillez Jamais</b> ha sido desarrollada por <a href="http://pauek.info">Pau Fernández</a> (<a href="https://twitter.com/pauek">@pauek</a>) en colaboración con Paco Chanivet para la obra \"Jornada de 8 actos\".</string>
+
 </resources>

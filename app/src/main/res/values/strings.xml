@@ -21,7 +21,6 @@
     <string name="detail_text_4" formatted="false">When the bucket is empty, the device is blocked until the bucket is filled back to half its capacity. With the current settings, that would be %d minutes.</string>
     <string name="detail_text_5"                  >Also, to discourage compulsive use, just unlocking the device counts as 1 minute of use.</string>
 
-
     <string name="param_total_screen_on">Target time per day</string>
     <string name="max_screen_on_time">Max continuous time</string>
     <string name="minutes">minutes</string>
@@ -29,22 +28,15 @@
     <string name="hours">hours</string>
 
     <string name="quote">
-        \"Los aparatos digitales traen una
-        nueva coacción, una nueva esclavitud.
-        Nos explotan de manera más eficiente
-        por cuanto, en virtud de su movilidad,
-        transforman todo lugar en un puesto de
-        trabajo y todo tiempo es un tiempo de
-        trabajo. La libertad de la movilidad se
-        trueca en la coacción fatal de tener que
-        trabajar en todas partes.\"
+        \"Digital devices bring a new type of coercion, a new form of slavery.
+        They exploit us more efficiently since, by virtue of their mobility, transform any place in a workplace, and any time in work time.
+        The freedom of mobility is exchanged for the fatal coercion of having to work everywhere.\"
     </string>
-    <string name="author">&#8212; Byung Chul Han</string>
+
+    <string name="author" translatable="false">&#8212; Byung Chul Han</string>
     <string name="show_quote">Show quote</string>
     <string name="about">About this app</string>
-    <string name="about_text"><![CDATA[
-        Ne Travaillez Jamais ha sido desarrollada por <a href="http://pauek.info">Pau Fernández</a> (<a href="https://twitter.com/pauek">@pauek</a>) en colaboración con Paco Chanivet para la obra "Jornada de 8 actos".
-    ]]>
-    </string>
+
+    <string name="about_text"><b>Ne Travaillez Jamais</b> has been developed by <a href="http://pauek.info">Pau Fernández</a> (<a href="https://twitter.com/pauek">@pauek</a>) in collaboration with Paco Chanivet for his work \"Jornada de 8 actos\".</string>
 
 </resources>
