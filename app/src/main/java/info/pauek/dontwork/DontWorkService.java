@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Binder;
@@ -36,18 +37,22 @@ public class DontWorkService extends Service {
     private static final float minutesPerDay = 24.0f * 60.0f;
 
     // Parameters
-    private int param1 = 1; // 1h
-    private int param2 = 5; // 10 minutes
-    private float paramScreenOnMinutesPerDay = 60.0f; // 1 hour screen on time every day
-    private float paramMaxConsecutiveMinutes = 10.0f;
+    private int param1;
+    private int param2;
+    private float paramScreenOnMinutesPerDay;
+    private float paramMaxConsecutiveMinutes;
 
     public void setParam1(int x) {
         param1 = x;
-        paramScreenOnMinutesPerDay = (param1 + 1) * 30.0f;
+        paramScreenOnMinutesPerDay = (param1 + 2) * 15.0f;
+
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("param1", param1);
+        editor.commit();
     }
 
     public String getTextParam1() {
-        String s;
         int min = (int)paramScreenOnMinutesPerDay;
         int H = min / 60;
         int M = min % 60;
@@ -74,6 +79,11 @@ public class DontWorkService extends Service {
         param2 = x;
         int minutes = param2 + 5;
         paramMaxConsecutiveMinutes = (float)minutes;
+
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("param2", param2);
+        editor.commit();
     }
 
     public int getMinutesParam2() {
@@ -118,6 +128,15 @@ public class DontWorkService extends Service {
     @Override
     public void onCreate() {
         Log.i("DontWork", "DontWorkService.onCreate");
+
+        // Read params from preferences...
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        param1 = settings.getInt("param1", 2); // 1h
+        param2 = settings.getInt("param2", 5); // 10 minutes
+        paramScreenOnMinutesPerDay = (param1 + 2) * 15.0f;
+        paramMaxConsecutiveMinutes = (float)(param2 + 5);
+
+        // Set receiver for events
         receiver = new DontWorkReceiver();
         filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_ON);
